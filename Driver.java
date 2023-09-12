@@ -12,7 +12,9 @@ public class Driver {
 
         //token generation
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        
+
+        outputTokens(lexer,tokens);
+
     }
 
     private static void outputTokens(lexer,tokens){
@@ -21,7 +23,7 @@ public class Driver {
             System.out.println("Token Type: " + LittleLexer.VOCABULARY.getDisplayName(tokens.getType()));
             System.out.println("Value: " + tokens.getText());
             tokens.consume();
-            i++; //iterate over
+            i++ ;
         }
     }
 
