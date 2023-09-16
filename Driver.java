@@ -1,11 +1,19 @@
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import java.io.FileInputStream;
+import java.io.File;
+import org.antlr.v4.runtime.Token;
 
 public class Driver {
+    public static void main(String args[]) throws Exception {
 
-    public static void main(String[] args) {
-        //this reads in standard input
-        ANTLRInputStream input = new ANTLRInputStream(System.in);
+        String fileName = "input.txt";
+        File file = new File(fileName);
+        FileInputStream fis = null;
+
+        fis = new FileInputStream(file);
+
+        ANTLRInputStream input = new ANTLRInputStream(fis);
 
         //lexical analyzer
         LittleLexer lexer = new LittleLexer(input);
@@ -13,18 +21,21 @@ public class Driver {
         //token generation
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-        outputTokens(lexer,tokens);
-
+        // Generate tokens
+        tokens.fill();
+        printTokens(tokens,lexer);
     }
 
-    private static void outputTokens(lexer,tokens){
-        int i = 0;
-        while(tokens[0] != null){
-            System.out.println("Token Type: " + LittleLexer.VOCABULARY.getDisplayName(tokens.getType()));
-            System.out.println("Value: " + tokens.getText());
-            tokens.consume();
-            i++ ;
+         //This is a function to print tokens created by the lexical rules
+        private static void printTokens(CommonTokenStream tokens,LittleLexer lexer){
+            for (Token token : tokens.getTokens()) {
+                String tokenName = LittleLexer.VOCABULARY.getSymbolicName(token.getType());
+                String tokenValue = token.getText();
+
+                System.out.println("Token Type: " + tokenName);
+                System.out.println("Value: " + tokenValue);
+            }
         }
-    }
+
 
 }
