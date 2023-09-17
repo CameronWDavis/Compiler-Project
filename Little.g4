@@ -1,4 +1,4 @@
-grammar Little;
+lexer grammar Little;
 
 COMMENT : '--' ~( '\r' | '\n' )* -> skip ;
 WS : [ \t\r\n]+ -> skip ;
