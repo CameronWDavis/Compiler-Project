@@ -8,10 +8,10 @@ public class Driver {
         ANTLRInputStream input = new ANTLRInputStream(System.in);
         LittleLexer  lexer = new LittleLexer (input);
 
-        processTokens(lexer);
+        printTokens(lexer);
     }
 
-    private static void processTokens(Little lexer) {
+    private static void printTokens(Little lexer) {
         for (Token token = lexer.nextToken(); token.getType() != Token.EOF; token = lexer.nextToken()) {
             String tokenName = Little.VOCABULARY.getDisplayName(token.getType());
             String tokenValue = token.getText();
