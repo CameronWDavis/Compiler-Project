@@ -1,7 +1,5 @@
 //imports for antlr libraries 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.Token;
 import java.io.IOException;
 
 public class Driver {
@@ -17,7 +15,7 @@ public class Driver {
     }
 
     
-    private static void printTokens(Little lexer) {
+    private static void printTokens(LittleLexer lexer) {
         //for loop to print token and type
         for (Token token = lexer.nextToken(); token.getType() != Token.EOF; token = lexer.nextToken()) {
             String tokenName = Little.VOCABULARY.getDisplayName(token.getType());
