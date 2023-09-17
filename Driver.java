@@ -16,7 +16,7 @@ public class Driver {
         printTokens(lexer);
     }
 
-    /
+    
     private static void printTokens(Little lexer) {
         //for loop to print token and type
         for (Token token = lexer.nextToken(); token.getType() != Token.EOF; token = lexer.nextToken()) {
