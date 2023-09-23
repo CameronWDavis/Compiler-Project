@@ -45,6 +45,7 @@ public class Driver {
     }
 
     //Function no longer in use right now 
+    /*
     private static void printTokens(LittleLexer lexer) {
         //for loop to print token and type
         for (Token token = lexer.nextToken(); token.getType() != Token.EOF; token = lexer.nextToken()) {
@@ -54,5 +55,6 @@ public class Driver {
             System.out.println("Token Type: " + tokenName);
             System.out.println("Value: " + tokenValue);
         }
-    }
+    } 
+    */ 
 }
