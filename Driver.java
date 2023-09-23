@@ -1,15 +1,18 @@
 //imports for antlr libraries 
 import org.antlr.v4.runtime.*;
 import java.io.IOException;
+import org.antlr.v4.runtime.tree.*;
 
 public class Driver {
 
+    //this class is used to see if the inputed file is valid or not
     static class ErrorCheck extends BaseErrorListener {
         private static boolean error = false;
 
         public void syntaxError(Recognizer<?, ?> recognizer,
                                 Object offendingSymbol,
-                                int line, int charPositionInLine,
+                                int line, 
+                                int charPositionInLine,
                                 String msg,
                                 RecognitionException e) {
             error = true;
@@ -40,12 +43,12 @@ public class Driver {
             System.out.println("Not accepted");
         }
 
-        //function call for printing 
+        //function call for printing tokens not in use right now 
        // printTokens(lexer);
     }
 
     //Function no longer in use right now 
-    /*
+    /* 
     private static void printTokens(LittleLexer lexer) {
         //for loop to print token and type
         for (Token token = lexer.nextToken(); token.getType() != Token.EOF; token = lexer.nextToken()) {
@@ -55,6 +58,6 @@ public class Driver {
             System.out.println("Token Type: " + tokenName);
             System.out.println("Value: " + tokenValue);
         }
-    } 
-    */ 
+    }
+    */
 }
