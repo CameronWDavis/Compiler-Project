@@ -1,7 +1,7 @@
 grammar Little;
 
 /* Program */
-program           : 'PROGRAM' id 'BEGIN' pgm_body 'END' + EOF ;
+program           : 'PROGRAM' id 'BEGIN' pgm_body 'END';
 id                :  IDENTIFIER ;
 pgm_body         :  decl func_declarations;
 decl          :  string_decl decl | var_decl decl | ;
