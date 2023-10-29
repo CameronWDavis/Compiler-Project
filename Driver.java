@@ -17,7 +17,6 @@ public static void  main(String[] args) throws IOException {
 
 	//creation of parser this turns our tokens into formal grammar also sees if file is valid
         LittleParser parser = new LittleParser(tokens);
-        parser.addErrorListener(new ErrorCheck());
         ParseTree tree = parser.program();
 	ParseTreeWalker walker = new ParseTreeWalker(); //parse the program 
 
