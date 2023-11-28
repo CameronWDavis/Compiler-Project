@@ -1,7 +1,7 @@
 import java.util.*;
 
 class SymbolTable { //this class creates a symbol table using a hashmap
-
+    //this will need to be updated to handle code with the switch statement 
     //class variables
     public String scope;
     public Map<String, Map<String, String>> table;
