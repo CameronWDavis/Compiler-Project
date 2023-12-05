@@ -21,10 +21,10 @@ public static void  main(String[] args) throws IOException {
 	ParseTreeWalker walker = new ParseTreeWalker(); //parse the program 
 
 	//creation of symbol table this gives our words meaning 
-	SimpleTableBuilder stb = new SimpleTableBuilder(); 
-	walker.walk(stb,tree); 
-	stb.prettyPrint(); //print the table 
-	stb.printTiny();
+	IRCode irGen = new IRCode(); // create our IR object 
+            walker.walk(irGen,tree);
+            irGen.prettyPrint(); // print hte IR codes 
+            irGen.printTiny(); // print the tiny code
 	
 }
 }
