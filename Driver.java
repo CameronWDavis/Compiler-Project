@@ -24,7 +24,7 @@ public static void  main(String[] args) throws IOException {
 	SimpleTableBuilder stb = new SimpleTableBuilder(); 
 	walker.walk(stb,tree); 
 	stb.prettyPrint(); //print the table 
-	#lkjhkl
+	stb.printTiny();
 	
 }
 }
