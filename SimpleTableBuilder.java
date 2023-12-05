@@ -1,21 +1,38 @@
 import java.util.*;
 
-//this class creates a symbol table using a hashmap
+/**
+ * @author Cameron Davis
+ * Last Updated 12/05/23
+ * This is a file that will be used to generate IR codes from a inputted program and then transform it into Tiny code that can be
+ * ran via the tiny simulator
+ */
 class SymbolTable {
+    //variables for my Symboltable
     public String scope;
     public Map<String, Map<String, String>> table;
     public List<String> irCodes; // List to store IR codes
 
+    /**
+     * class contructor
+     * @param scope
+     */
     public SymbolTable(String scope) {
         this.scope = scope;
         this.table = new LinkedHashMap<>();
         this.irCodes = new ArrayList<>();
     }
 
+    /**
+     * function to add a IR code to our sting
+     * @param code
+     */
     public void addIRCode(String code) {
         irCodes.add(code);
     }
 
+    /**
+     * function used to print the IR codes
+     */
     public void printIRCodes() {
         for (String code : irCodes) {
             System.out.println(code);
@@ -25,17 +42,25 @@ class SymbolTable {
 
 } // end of SymboleTable
 
-public class SimpleTableBuilder extends LittleBaseListener {
-
+public class IRCode extends LittleBaseListener {
+    //local variables in my IR code
     private int tempVarCount = 0;
     private boolean isFloat = false;
     LinkedList<SymbolTable> stack = new LinkedList<>();
     SymbolTable currentTable;
 
+    /**
+     * This is a function that will initialize the register
+     * @return
+     */
     private String newTempVar() {
         return "$T" + (++tempVarCount);
     }
 
+    /**
+     * This is a call for when the program tstarts to start filling the list our faster
+     * @param ctx the parse tree
+     */
     @Override
     public void enterProgram(LittleParser.ProgramContext ctx) {
         SymbolTable globalTable = new SymbolTable("GLOBAL");
@@ -50,6 +75,10 @@ public class SimpleTableBuilder extends LittleBaseListener {
 
     private Map<String, String> stringDeclarations = new HashMap<>();
 
+    /**
+     *
+     * @param ctx the parse tree
+     */
     @Override
     public void enterString_decl(LittleParser.String_declContext ctx) {
         String varName = ctx.id().getText();
@@ -57,6 +86,10 @@ public class SimpleTableBuilder extends LittleBaseListener {
         stringDeclarations.put(varName, value);
     }
 
+    /**
+     *
+     * @param ctx the parse tree
+     */
     @Override
     public void exitProgram(LittleParser.ProgramContext ctx) {
         currentTable.addIRCode(";RET");
@@ -65,10 +98,13 @@ public class SimpleTableBuilder extends LittleBaseListener {
 
     @Override
     public void enterFunc_dec1(LittleParser.Func_declContext ctx) {
-        
+
     }
 
-
+    /**
+     *
+     * @param ctx the parse tree
+     */
     @Override
     public void enterVar_decl(LittleParser.Var_declContext ctx) {
         String type = ctx.var_type().getText();
@@ -79,6 +115,10 @@ public class SimpleTableBuilder extends LittleBaseListener {
         }
     }
 
+    /**
+     *
+     * @param ctx the parse tree
+     */
     @Override
     public void enterAssign_stmt(LittleParser.Assign_stmtContext ctx) {
         String variableName = ctx.assign_expr().id().getText();
@@ -115,6 +155,10 @@ public class SimpleTableBuilder extends LittleBaseListener {
         }
     }
 
+    /**
+     * This is a syntax statement for read functions
+     * @param ctx the parse tree
+     */
     @Override
     public void enterRead_stmt(LittleParser.Read_stmtContext ctx) {
         String idList = ctx.id_list().getText();
@@ -125,6 +169,12 @@ public class SimpleTableBuilder extends LittleBaseListener {
             currentTable.addIRCode(";READI " + variableName);
         }
     }
+
+    /**
+     * This is a function desinged to take in write statements and if float use WriteF and then if not
+     * it will use writeI for a integer
+     * @param ctx the parse tree
+     */
     @Override
     public void enterWrite_stmt(LittleParser.Write_stmtContext ctx) {
         String itemList = ctx.id_list().getText(); // Get the comma-separated list of items
@@ -143,21 +193,38 @@ public class SimpleTableBuilder extends LittleBaseListener {
     }
 
 
+    //method is used to print the IR codes of the program out
     public void prettyPrint() {
         for (SymbolTable table : stack) {
-            //table.printTable();
             table.printIRCodes();
         }
     }
 
+    //calling our compiler to generate tiny code from our IR code
     Compiler compiler = new Compiler(stack,stringDeclarations);
 
+    /**
+     * this is a print function that will display our tiny code
+     */
     public void printTiny(){
         ArrayList<String> tinyCode = compiler.Compile();
         for (String line : tinyCode) {
             System.out.println(line);
         }
     }
+
+    //THIS IS FOR OPTIMIZATION THINGS WILL GET BAD
+    public void printOptimized(){
+        List<String> optimizedCode = optimizeMoves(compiler);
+        for (String line : optimizedCode) {
+            System.out.println(line);
+        }
+    }
+
+    /**
+     * This class is for my compiler object will will compile the IR into Tiny Code via a switch statement
+     */
+
     public class Compiler {
 
         private LinkedList<SymbolTable> stack;
@@ -292,5 +359,32 @@ public class SimpleTableBuilder extends LittleBaseListener {
             tinyCode.add("sys halt");
             return tinyCode;
         }
+    }// end compiler class
+
+    private static List<String> optimizeMoves(Compiler codeLines) {
+        List<String> optimizedCode = new ArrayList<>();
+        String lastRegister = null;
+        ArrayList<String> tinyCode = codeLines.Compile();
+
+        for (String line : tinyCode) {
+            String[] parts = line.split(" ");
+
+            // Check for move to register
+            if (parts[0].equals("move") && parts[1].matches("\\d+") && parts[2].startsWith("r")) {
+                lastRegister = parts[2];
+                optimizedCode.add(line);
+            }
+            // Check for move from register
+            else if (parts[0].equals("move") && parts[1].equals(lastRegister)) {
+                String newLine = "move " + optimizedCode.get(optimizedCode.size() - 1).split(" ")[1] + " " + parts[2];
+                optimizedCode.set(optimizedCode.size() - 1, newLine);
+            } else {
+                optimizedCode.add(line);
+                lastRegister = null;
+            }
+        }
+
+        return optimizedCode;
     }
+
 }
