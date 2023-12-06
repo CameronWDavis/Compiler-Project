@@ -6,7 +6,7 @@ import java.util.*;
  * This is a file that will be used to generate IR codes from a inputted program and then transform it into Tiny code that can be
  * ran via the tiny simulator
  */
-class SymbolTable {
+class Symbols {
     //variables for my Symboltable
     public String scope;
     public Map<String, Map<String, String>> table;
@@ -16,7 +16,7 @@ class SymbolTable {
      * class contructor
      * @param scope
      */
-    public SymbolTable(String scope) {
+    public Symbols(String scope) {
         this.scope = scope;
         this.table = new LinkedHashMap<>();
         this.irCodes = new ArrayList<>();
@@ -46,8 +46,8 @@ public class IRCode extends LittleBaseListener {
     //local variables in my IR code
     private int tempVarCount = 0;
     private boolean isFloat = false;
-    LinkedList<SymbolTable> stack = new LinkedList<>();
-    SymbolTable currentTable;
+    LinkedList<Symbols> stack = new LinkedList<>();
+    Symbols currentTable;
 
     /**
      * This is a function that will initialize the register
@@ -63,7 +63,7 @@ public class IRCode extends LittleBaseListener {
      */
     @Override
     public void enterProgram(LittleParser.ProgramContext ctx) {
-        SymbolTable globalTable = new SymbolTable("GLOBAL");
+        Symbols globalTable = new Symbols("GLOBAL");
         currentTable = globalTable;
         stack.push(globalTable);
 
@@ -195,7 +195,7 @@ public class IRCode extends LittleBaseListener {
 
     //method is used to print the IR codes of the program out
     public void prettyPrint() {
-        for (SymbolTable table : stack) {
+        for (Symbols table : stack) {
             table.printIRCodes();
         }
     }
@@ -227,7 +227,7 @@ public class IRCode extends LittleBaseListener {
 
     public class Compiler {
 
-        private LinkedList<SymbolTable> stack;
+        private LinkedList<Symbols> stack;
         Map<String, String> registerMap = new HashMap<>();
         private int registerCount = 0;
 
@@ -238,7 +238,7 @@ public class IRCode extends LittleBaseListener {
             return irVariable;
         }
 
-        public Compiler(LinkedList<SymbolTable> stack,Map<String, String> stringDeclarations) {
+        public Compiler(LinkedList<Symbols> stack,Map<String, String> stringDeclarations) {
             this.stack = stack;
         }
 
@@ -247,7 +247,7 @@ public class IRCode extends LittleBaseListener {
             Map<String, String> registerMap = new HashMap<>();
             Set<String> variables = new HashSet<>();
 
-            for (SymbolTable table : stack) {
+            for (Symbols table : stack) {
                 for (String line : table.irCodes) {
                     String[] parts = line.split(" ");
                     if (parts.length > 1) {
@@ -272,7 +272,7 @@ public class IRCode extends LittleBaseListener {
             }
 
             // Process IR codes and generate Tiny code
-            for (SymbolTable table : stack) {
+            for (Symbols table : stack) {
                 for (String line : table.irCodes) {
                     String[] parts = line.split(" ");
                     String instruction = parts[0].substring(1); // Remove leading ";"
