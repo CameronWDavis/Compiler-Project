@@ -96,11 +96,6 @@ public class IRCode extends LittleBaseListener {
         currentTable.addIRCode(";tiny code");
     }
 
-    @Override
-    public void enterFunc_dec1(LittleParser.Func_declContext ctx) {
-
-    }
-
     /**
      *
      * @param ctx the parse tree
@@ -388,3 +383,4 @@ public class IRCode extends LittleBaseListener {
     }
 
 }
+
