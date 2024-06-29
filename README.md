@@ -48,3 +48,5 @@ Output
 
     IR codes are printed first, representing the intermediate representation of the input program.
     Tiny code is printed next, which can be used in a Tiny simulator
+
+Ending 
